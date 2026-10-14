@@ -35,26 +35,35 @@ Todo el procesamiento se realizó en **QGIS**, y el reporte está escrito en **L
 | Área de descarga | 74,61 km² — lon −44,224111 a −44,096943; lat −20,159193 a −20,108763 |
 | SRC del proyecto / ROI | WGS 84 / UTM zona 23S (EPSG:32723) |
 
-> Los rásteres no se incluyen en el repositorio por su tamaño. Se pueden volver a descargar desde [Copernicus Browser](https://browser.dataspace.copernicus.eu/) con los parámetros de esta tabla.
+> El repositorio **sí incluye** los datos descargados (bandas crudas, recortes y rásteres de índices) y los productos de la Fase 4, para que cualquiera lo clone y abra el proyecto sin dependencias externas. Si se parte de cero, las escenas se pueden descargar desde [Copernicus Browser](https://browser.dataspace.copernicus.eu/) con los parámetros de esta tabla.
 
 ## Estructura del repositorio
 
 ```
 .
 ├── README.md
-├── report/
-│   ├── main.tex            # Reporte en LaTeX
-│   ├── references.bib      # Bibliografía (biblatex / biber)
-│   └── figures/            # Capturas de QGIS y mapas temáticos
-├── data/
-│   └── ROI_Brumadinho.gpkg # Polígono del área de estudio
-└── qgis/
-    └── proyecto.qgz        # Proyecto de QGIS (opcional)
+├── Docs/
+│   ├── Brumadinho_Minas_Gerais_Brasil_Report.pdf   # Informe compilado
+│   ├── Overleaf_Project/                            # Fuente LaTeX del informe
+│   │   ├── main.tex
+│   │   ├── references.bib
+│   │   └── figures/                                 # Capturas de QGIS y mapas temáticos
+│   └── Overleaf_Project.zip                         # Paquete listo para Overleaf
+└── QGIS_Project/
+    ├── Proyecto1.qgz                                # Proyecto de QGIS (usa rutas relativas)
+    ├── ROI_Brumadinho.gpkg                          # Polígono del área de estudio
+    ├── Brumadinho_t1/ , Brumadinho_t2/              # Bandas crudas y recortes por fecha
+    ├── NDVI_*.tif , NDWI_*.tif , dNDVI.tif , dNDWI.tif
+    ├── cambio_*.tif/gpkg , sin_cambio.gpkg          # Productos de la Fase 4
+    ├── muestra_*.geojson                            # Puntos de muestreo (validación)
+    └── fase4/                                       # Capturas del proceso (Fase 4)
 ```
+
+Para abrir el proyecto: clona el repo y abre `QGIS_Project/Proyecto1.qgz`; las capas usan rutas relativas, así que cargan sin reconfigurar nada.
 
 ## Metodología
 
-El flujo sigue las cinco fases propuestas en el enunciado del proyecto. Esta entrega parcial cubre las fases 1 a 3.
+El flujo sigue las cinco fases propuestas en el enunciado del proyecto. Esta entrega cubre las fases 1 a 4.
 
 ### Fase 1 — Definición del problema y adquisición de datos
 - Selección de t1 y t2: las escenas más cercanas al evento con el ROI libre de nubes, usando un filtro de nubosidad máxima del 30 % en Copernicus Browser.
@@ -79,15 +88,18 @@ El flujo sigue las cinco fases propuestas en el enunciado del proyecto. Esta ent
 - Diferencias ΔNDVI y ΔNDWI (t2 − t1).
 - Interpretación y comparación de ambos índices por zona: corredor, río, mina y áreas estables.
 
-### Fase 4 — Posprocesamiento y evaluación *(entrega final)*
-- Umbralización de ΔNDVI (por ejemplo, ±2σ).
-- Validación con Google Earth Pro: matriz de confusión, Kappa y F1.
-- Vectorización, mapas temáticos y cálculo del área de cambio.
+### Fase 4 — Posprocesamiento y evaluación
+- **Umbralización:** ΔNDVI con μ = 0,0026 y σ = 0,0580 (calculados con |ΔNDVI| < 0,15); umbral **τ = μ − 2σ = −0,11** → ráster binario `cambio_binario_NDVI` (31 489 px, 51,3 % del ROI).
+- **Referencia:** pérdida de vegetación como `(NDVI_t1 ≥ 0,3) AND (NDVI_t2 ≤ 0,2)` (23 837 px, 38,8 %).
+- **Vectorización:** poligonizar → disolver → descartar polígonos < 0,5 ha → 2 polígonos.
+- **Área afectada:** 273,86 ha (2,74 km²), 50,9 % del ROI.
+- **Validación:** muestreo estratificado (50 + 50) → OA 0,91, Kappa 0,82, F1 0,90; evaluación censal → OA 0,875, Kappa 0,751, F1 0,862.
 
 ## Resultados principales
 
 - **ΔNDVI** muestra una disminución fuerte y confinada al corredor del Ribeirão Ferro-Carvão y al cauce del Paraopeba. El rango observado va de −0,970 a 0,771.
 - **NDWI** identifica consistentemente el agua superficial (NDWI t2 entre −0,824 y 0,024), pero es poco sensible al material depositado.
+- **Área de cambio (Fase 4):** 273,86 ha (2,74 km²), el 50,9 % del ROI, con una exactitud de OA 0,91 / Kappa 0,82 / F1 0,90 (muestreo estratificado).
 - **Conclusión:** el NDVI es el índice más discriminante para delimitar la zona de cambio. El NDWI complementa el análisis del río.
 
 ## Cómo compilar el reporte
@@ -119,9 +131,9 @@ latexmk -pdf main.tex
 
 ## Pendientes
 
-- [ ] Re-descargar la banda SCL en formato *Raw*, de una sola banda con valores de 0 a 11, y regenerar las máscaras de nubes.
-- [ ] Completar las estadísticas de los índices (media y desviación estándar) dentro del ROI.
-- [ ] Desarrollar la Fase 4.
+- [ ] Incorporar al informe el mapa temático del cambio (Print Layout de QGIS).
+- [ ] Recapturar el muestreo final como anexo (50 puntos proporcionales con `muestra_cambio2`).
+- [ ] (Opcional) Contrastar con imágenes de alta resolución (Google Earth) y preparar la presentación de diapositivas.
 
 ## Referencias
 
