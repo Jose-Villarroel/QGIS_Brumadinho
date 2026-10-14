@@ -54,7 +54,7 @@ José Alejandro Villarroel \\[0.4cm]
 \section{Introducción}
 La detección de cambios a partir de imágenes satelitales consiste en identificar diferencias en el estado de un objeto o fenómeno al observarlo en distintos momentos \parencite{Singh1989}. Al comparar imágenes adquiridas antes ($t_1$) y después ($t_2$) de un evento se puede localizar, delimitar y cuantificar la transformación de la cobertura terrestre. Esta información es la base del seguimiento ambiental y de la gestión del riesgo.
 
-El presente trabajo aplica este enfoque al caso de Brumadinho (Minas Gerais, Brasil) en enero de 2019. En ese evento un flujo de relaves mineros cubrió el valle del Ribeirão Ferro-Carvão y alcanzó el río Paraopeba. Se usan imágenes ópticas del programa Copernicus (Sentinel-2) \parencite{Drusch2012} y dos índices espectrales normalizados:
+El presente trabajo aplica este enfoque al caso de Brumadinho (Minas Gerais, Brasil), donde el 25 de enero de 2019 colapsó un dique de relaves mineros. El flujo de lodo cubrió el valle del Ribeirão Ferro-Carvão y alcanzó el río Paraopeba, con un saldo de 270 víctimas mortales \parencite{Rotta2020}. Se usan imágenes ópticas del programa Copernicus (Sentinel-2) \parencite{Drusch2012} y dos índices espectrales normalizados:
 \begin{itemize}
     \item el \emph{Normalized Difference Vegetation Index} (NDVI) \parencite{Rouse1974, Tucker1979}, sensible al vigor de la vegetación;
     \item el \emph{Normalized Difference Water Index} (NDWI) \parencite{McFeeters1996}, sensible a la presencia de agua superficial.
@@ -64,6 +64,13 @@ El objetivo de esta entrega es cubrir las fases 1 a 4 del flujo metodológico. E
 
 \section{Región de interés (ROI) y caso de estudio}
 El área de estudio se localiza en el municipio de Brumadinho, al suroeste de Belo Horizonte, dentro del Cuadrilátero Ferrífero de Minas Gerais. Es una región de relieve ondulado dominada por un mosaico de remanentes de bosque atlántico, pastos, zonas urbanas y explotaciones mineras de hierro. El clima es tropical con una estación lluviosa en verano (noviembre--marzo), lo que condiciona fuertemente la disponibilidad de imágenes ópticas sin nubes.
+
+\subsection{El evento}
+El 25 de enero de 2019, hacia las 12:28, colapsó el dique B1 de la mina Córrego do Feijão, operada por Vale S.A. en Brumadinho. La estructura, construida por el método de ``alteamiento a montante'' (\emph{upstream}), retenía del orden de 12 millones de m$^3$ de relaves (residuos finos del procesamiento de mineral de hierro). La ruptura liberó una avalancha de lodo que descendió unos 10\,km por el valle del Ribeirão Ferro-Carvão, arrasando las instalaciones de la mina y las áreas habitadas y rurales a su paso, y terminó alcanzando el río Paraopeba, afluente del río São Francisco \parencite{Rotta2020}.
+
+Las consecuencias fueron severas en varios frentes. En el plano humano, la catástrofe causó 270 víctimas mortales (259 cuerpos recuperados y 11 personas desaparecidas), en su mayoría trabajadores de la mina y residentes de la zona; fue el mayor desastre de este tipo en la historia de Brasil. En el plano ambiental, el lodo sepultó la vegetación riparia (bosque atlántico y cerrado) a lo largo del corredor, provocó la mortandad de peces y de fauna acuática y arrastró metales pesados (hierro, manganeso, aluminio) hacia el Paraopeba, cuya calidad del agua se degradó y obligó a interrumpir el abastecimiento de varios municipios de la región metropolitana de Belo Horizonte. En el plano económico y legal, fue el segundo colapso de un dique de relaves de Vale en menos de cuatro años ---tras el desastre de Fundão, en Mariana (noviembre de 2015)---, lo que derivó en procesos penales, la inhabilitación de centenares de estructuras similares y acuerdos de reparación por miles de millones de reales.
+
+Tras el evento, la trayectoria del material quedó registrada en el terreno como una franja continua de vegetación destruida sobre el corredor del valle y el cauce del río; esa es precisamente la señal que este trabajo busca detectar mediante la diferencia de índices espectrales.
 
 Se trabajó a dos escalas:
 \begin{itemize}
