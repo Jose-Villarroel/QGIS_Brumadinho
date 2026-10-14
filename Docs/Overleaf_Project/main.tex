@@ -262,16 +262,35 @@ En esta fase el mapa continuo de $\Delta$NDVI se transforma en una máscara bina
     \begin{equation}
      \Delta\mathrm{NDVI} < \tau = -0{,}11 .
     \end{equation}
-    El resultado es el ráster binario \texttt{cambio\_binario\_NDVI}, con 31\,489 píxeles de cambio, equivalentes al 51{,}3\,\% del ROI.
+    El resultado es el ráster binario \texttt{cambio\_binario\_NDVI}, con 31\,489 píxeles de cambio, equivalentes al 51{,}3\,\% del ROI. La configuración de ambos pasos se muestra en la Figura~\ref{fig:f4_umbral}.
     \item \textbf{Referencia:} para evaluar el resultado se definió una referencia espectral estricta de pérdida de vegetación, que marca los píxeles que tenían vegetación en $t_1$ y pasaron a suelo o material mineral en $t_2$:
     \begin{equation}
      R = (\mathrm{NDVI}_{t_1} \ge 0{,}3) \land (\mathrm{NDVI}_{t_2} \le 0{,}2),
     \end{equation}
     con 23\,837 píxeles (38{,}8\,\% del ROI). La referencia es un subconjunto del cambio detectado, de manera que no hay falsos negativos y el error se concentra en el exceso de detección.
-    \item \textbf{Vectorización:} el ráster de cambio se convirtió a polígonos (Poligonizar), se eliminaron los duplicados y se disolvió la geometría. Para descartar píxeles aislados se descartaron los polígonos menores de $0{,}5$ ha, con lo que quedaron 2 polígonos.
+    \item \textbf{Vectorización:} el ráster de cambio se convirtió a polígonos (Poligonizar), se eliminaron los duplicados y se disolvió la geometría. Para descartar píxeles aislados se descartaron los polígonos menores de $0{,}5$ ha, con lo que quedaron 2 polígonos (Figura~\ref{fig:f4_vector}).
     \item \textbf{Área afectada:} la superficie total de cambio es de 273{,}86 ha (2{,}74 km$^2$), el 50{,}9\,\% del área de análisis (538{,}46 ha).
     \item \textbf{Validación:} la exactitud se evaluó con un muestreo aleatorio estratificado de 50 puntos dentro del cambio y 50 fuera de él, con asignación proporcional al área de cada clase, sobre los que se muestrearon los valores del ráster de cambio y de la referencia. La matriz de confusión y los coeficientes se resumen en la Tabla~\ref{tab:exactitud}.
 \end{itemize}
+
+\begin{figure}[H]
+ \centering
+ \begin{subfigure}{0.49\textwidth}\includegraphics[width=\linewidth]{figures/f4_estable}\caption{Exclusión de extremos ($|\Delta\mathrm{NDVI}|<0{,}15$)}\end{subfigure}
+ \hfill
+ \begin{subfigure}{0.49\textwidth}\includegraphics[width=\linewidth]{figures/f4_umbral}\caption{Umbral $\Delta\mathrm{NDVI}<\tau=-0{,}11$}\end{subfigure}
+ \caption{Umbralización de $\Delta$NDVI: descarte de los valores extremos y obtención del ráster binario de cambio.}
+ \label{fig:f4_umbral}
+\end{figure}
+
+\begin{figure}[H]
+ \centering
+ \begin{subfigure}{0.49\textwidth}\includegraphics[width=\linewidth]{figures/f4_referencia}\caption{Referencia de pérdida de vegetación}\end{subfigure}
+ \hfill
+ \begin{subfigure}{0.49\textwidth}\includegraphics[width=\linewidth]{figures/f4_poligonizar}\caption{Poligonización del ráster de cambio}\end{subfigure}\\[4pt]
+ \begin{subfigure}{0.49\textwidth}\includegraphics[width=\linewidth]{figures/f4_filtro}\caption{Filtro de polígonos $\ge 0{,}5$ ha}\end{subfigure}
+ \caption{Definición de la referencia espectral y vectorización del ráster de cambio.}
+ \label{fig:f4_vector}
+\end{figure}
 
 \section{Resultados y discusión}
 
@@ -340,7 +359,7 @@ La Tabla~\ref{tab:comparacion} resume la respuesta de ambos índices según la z
 La comparación muestra que el NDVI es el índice más discriminante para delimitar la huella del cambio. La transición de vegetación a material mineral produce el mayor contraste espectral entre fechas. El NDWI de McFeeters fue diseñado para agua abierta y responde de forma limitada a superficies de material saturado, pero aporta información complementaria sobre el comportamiento del cauce. En consecuencia, $\Delta$NDVI se adopta como variable principal para la umbralización de la Fase~4, y $\Delta$NDWI como variable de apoyo para el análisis del río.
 
 \subsection{Detección del cambio (Fase 4)}
-\textbf{Umbral y área afectada.} La distribución de $\Delta$NDVI dentro del ROI (Figura~\ref{fig:hist}) se concentra alrededor de cero y presenta una cola hacia valores negativos, lo que respalda la elección de un umbral negativo. Con $\tau=-0{,}11$ se detectan 31\,489 píxeles de cambio (51{,}3\,\% del ROI) que, tras la vectorización y el descarte de los polígonos menores de $0{,}5$ ha, dan lugar a 2 polígonos con un área total de 273{,}86 ha (2{,}74 km$^2$), el 50{,}9\,\% del área de análisis. La huella se confina al corredor del Ribeirão Ferro-Carvão y al cauce del Paraopeba, en coherencia con los mapas de $\Delta$NDVI de la Figura~\ref{fig:delta}.
+\textbf{Umbral y área afectada.} La distribución de $\Delta$NDVI dentro del ROI (Figura~\ref{fig:hist}) se concentra alrededor de cero y presenta una cola hacia valores negativos, lo que respalda la elección de un umbral negativo. Con $\tau=-0{,}11$ se detectan 31\,489 píxeles de cambio (51{,}3\,\% del ROI) que, tras la vectorización y el descarte de los polígonos menores de $0{,}5$ ha, dan lugar a 2 polígonos con un área total de 273{,}86 ha (2{,}74 km$^2$), el 50{,}9\,\% del área de análisis. La huella se confina al corredor del Ribeirão Ferro-Carvão y al cauce del Paraopeba, en coherencia con los mapas de $\Delta$NDVI de la Figura~\ref{fig:delta}. El área de cambio vectorizada y los puntos del muestreo de validación se muestran en la Figura~\ref{fig:f4_resultado}.
 
 \begin{figure}[H]
  \centering
@@ -372,6 +391,16 @@ La comparación muestra que el NDVI es el índice más discriminante para delimi
   \bottomrule
  \end{tabular}
 \end{table}
+
+\begin{figure}[H]
+ \centering
+ \begin{subfigure}{0.49\textwidth}\includegraphics[width=\linewidth]{figures/f4_cambio}\caption{Área de cambio vectorizada}\end{subfigure}
+ \hfill
+ \begin{subfigure}{0.49\textwidth}\includegraphics[width=\linewidth]{figures/f4_puntos_cambio}\caption{Puntos dentro del cambio}\end{subfigure}\\[4pt]
+ \begin{subfigure}{0.49\textwidth}\includegraphics[width=\linewidth]{figures/f4_puntos_sin}\caption{Puntos fuera del cambio}\end{subfigure}
+ \caption{Área de cambio detectada y puntos del muestreo aleatorio estratificado empleado en la validación.}
+ \label{fig:f4_resultado}
+\end{figure}
 
 \subsection{Estadísticas}
 Los rangos observados de los índices son de $-0{,}824$ a $0{,}024$ para NDWI$_{t_2}$ y de $-0{,}970$ a $0{,}771$ para $\Delta$NDVI. La asimetría de este último rango, con una magnitud negativa alrededor de $1{,}3$ veces mayor que la positiva, indica que el cambio dominante en el ROI es la pérdida de vegetación. El área total afectada, calculada en la Fase~4 tras la umbralización y la vectorización, es de 273{,}86 ha (2{,}74 km$^2$), el 50{,}9\,\% del área de análisis.
