@@ -10,3 +10,7 @@
 *.run.xml
 *.synctex.gz
 main.pdf
+
+# SQLite transitorios de GeoPackage
+*.gpkg-shm
+*.gpkg-wal
