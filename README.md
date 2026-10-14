@@ -86,8 +86,8 @@ El flujo sigue las cinco fases propuestas en el enunciado del proyecto. Esta ent
 
 ## Resultados principales
 
-- **ΔNDVI** muestra una disminución fuerte y confinada al corredor del Ribeirão Ferro-Carvão y al cauce del Paraopeba. El rango observado va de −0,406 a 0,144.
-- **NDWI** identifica consistentemente el agua superficial (NDWI t2 entre −0,819 y 0,439), pero es poco sensible al material depositado.
+- **ΔNDVI** muestra una disminución fuerte y confinada al corredor del Ribeirão Ferro-Carvão y al cauce del Paraopeba. El rango observado va de −0,970 a 0,771.
+- **NDWI** identifica consistentemente el agua superficial (NDWI t2 entre −0,824 y 0,024), pero es poco sensible al material depositado.
 - **Conclusión:** el NDVI es el índice más discriminante para delimitar la zona de cambio. El NDWI complementa el análisis del río.
 
 ## Cómo compilar el reporte
@@ -120,7 +120,6 @@ latexmk -pdf main.tex
 ## Pendientes
 
 - [ ] Re-descargar la banda SCL en formato *Raw*, de una sola banda con valores de 0 a 11, y regenerar las máscaras de nubes.
-- [ ] Corregir la simbología del mapa ΔNDWI y actualizar `figures/dndwi.png`.
 - [ ] Completar las estadísticas de los índices (media y desviación estándar) dentro del ROI.
 - [ ] Desarrollar la Fase 4.
 
