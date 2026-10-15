@@ -133,7 +133,8 @@ latexmk -pdf main.tex
 
 - [ ] Incorporar al informe el mapa temático del cambio (Print Layout de QGIS).
 - [ ] Recapturar el muestreo final como anexo (50 puntos proporcionales con `muestra_cambio2`).
-- [ ] (Opcional) Contrastar con imágenes de alta resolución (Google Earth) y preparar la presentación de diapositivas.
+- [x] Contrastar con imágenes de alta resolución (Google Earth Pro) — integrado en la Fase 4 del informe.
+- [ ] Preparar la defensa: soporte del presentador y lista de preguntas probables.
 
 ## Referencias
 

@@ -308,11 +308,11 @@ En esta fase el mapa continuo de $\Delta$NDVI se transforma en una máscara bina
  \begin{subfigure}{0.49\textwidth}\includegraphics[width=\linewidth]{figures/ndvi_t1}\caption{NDVI $t_1$}\end{subfigure}
  \hfill
  \begin{subfigure}{0.49\textwidth}\includegraphics[width=\linewidth]{figures/ndvi_t2}\caption{NDVI $t_2$}\end{subfigure}
- \caption{NDVI antes y después del evento. Los tonos oscuros corresponden a NDVI alto (vegetación), los claros a NDVI bajo (suelo o material mineral) y los rojos a valores negativos (agua).}
+ \caption{NDVI antes y después del evento. Los tonos verdes oscuros corresponden a NDVI alto (vegetación) y los claros a NDVI bajo (suelo, material mineral o agua).}
  \label{fig:ndvi}
 \end{figure}
 
-\textbf{NDVI.} En $t_1$ (Figura~\ref{fig:ndvi}a) el corredor del Ribeirão Ferro-Carvão presenta tonos oscuros, es decir, NDVI alto, propio de vegetación riparia, fragmentos de bosque y pastos. Solo el sector de la mina muestra valores bajos, por tratarse de superficies de material expuesto. En $t_2$ (Figura~\ref{fig:ndvi}b) todo el corredor pasa a tonos claros, con NDVI cercano a cero. Este es el comportamiento típico de una superficie sin cobertura vegetal: el material depositado tiene una reflectancia en el rojo comparable a la del NIR. En el río Paraopeba los valores negativos se intensifican en $t_2$, lo que indica un cambio en las propiedades ópticas del agua.
+\textbf{NDVI.} En $t_1$ (Figura~\ref{fig:ndvi}a) el corredor del Ribeirão Ferro-Carvão presenta tonos verdes oscuros, es decir, NDVI alto, propio de vegetación riparia, fragmentos de bosque y pastos. Solo el sector de la mina muestra valores bajos, por tratarse de superficies de material expuesto. En $t_2$ (Figura~\ref{fig:ndvi}b) todo el corredor pasa a tonos claros, con NDVI cercano a cero. Este es el comportamiento típico de una superficie sin cobertura vegetal: el material depositado tiene una reflectancia en el rojo comparable a la del NIR. En el río Paraopeba los valores negativos se intensifican en $t_2$, lo que indica un cambio en las propiedades ópticas del agua.
 
 \begin{figure}[H]
  \centering
@@ -408,6 +408,37 @@ La comparación muestra que el NDVI es el índice más discriminante para delimi
  \caption{Área de cambio detectada y puntos del muestreo aleatorio estratificado empleado en la validación.}
  \label{fig:f4_resultado}
 \end{figure}
+
+\textbf{Validación con imagen de alta resolución.} El resultado se contrastó además con imágenes de alta resolución de Google Earth Pro (Figura~\ref{fig:googleearth}). La huella de cambio detectada con Sentinel-2 coincide con el depósito de relave observable en esas imágenes, tanto a lo largo del corredor del Ribeirão Ferro-Carvão como en el cauce del río Paraopeba, lo que confirma que el cambio identificado corresponde a la superficie afectada y no a ruido del sensor. Las diferencias en los bordes se explican por el desfase temporal entre las fechas de Sentinel-2 ($01$-$02$-$2019$) y las de Google Earth.
+
+\begin{figure}[H]
+ \centering
+ \begin{subfigure}{0.86\textwidth}\includegraphics[width=\linewidth]{figures/ge_antes}\caption{Antes del colapso: el valle conserva la cobertura vegetal.}\end{subfigure}\\[4pt]
+ \begin{subfigure}{0.86\textwidth}\includegraphics[width=\linewidth]{figures/ge_despues}\caption{Después del colapso (27-02-2019): el depósito de relave coincide con el polígono de cambio.}\end{subfigure}
+ \caption{Contraste del cambio detectado (polígono rojo) con imágenes de alta resolución de Google Earth Pro. Créditos: CNES/Airbus (arriba) y Maxar Technologies (abajo).}
+ \label{fig:googleearth}
+\end{figure}
+
+\subsection{Matriz de transición de coberturas (From-To)}
+La clasificación de cada fecha con los mismos umbrales de NDVI y NDWI (vegetación: NDVI $\ge 0{,}3$; transición: $0{,}2<\mathrm{NDVI}<0{,}3$; suelo/relave: NDVI $\le 0{,}2$; agua: NDWI $>0$) permite construir la matriz de transición \emph{From-To} de la Tabla~\ref{tab:fromto}. La diagonal representa la persistencia de cada clase y las celdas fuera de ella, las transiciones entre $t_1$ y $t_2$.
+
+\begin{table}[H]
+ \centering
+ \caption{Matriz de cambio \emph{From-To} dentro del ROI. Filas: cobertura en $t_1$; columnas: cobertura en $t_2$. Valores en hectáreas con el conteo de píxeles entre paréntesis. La diagonal es persistencia; fuera de la diagonal, cambio.}
+ \label{tab:fromto}
+ \begin{tabular}{lrrrr}
+  \toprule
+  $t_1 \backslash t_2$ & \textbf{Agua} & \textbf{Vegetación} & \textbf{Transición} & \textbf{Suelo/relave} \\
+  \midrule
+  Agua         & 0{,}0 (0)         & 1{,}7 (191)       & 20{,}4 (2\,327) & 10{,}6 (1\,209) \\
+  Vegetación   & 0{,}0 (2)         & 208{,}2 (23\,728) & 16{,}8 (1\,912) & 209{,}1 (23\,835) \\
+  Transición   & 0{,}0 (0)         & 6{,}0 (689)       & 2{,}8 (322)     & 13{,}0 (1\,481) \\
+  Suelo/relave & 0{,}0 (0)         & 11{,}3 (1\,288)   & 4{,}7 (540)     & 33{,}8 (3\,853) \\
+  \bottomrule
+ \end{tabular}
+\end{table}
+
+La transición dominante es vegetación$\rightarrow$suelo/relave (209{,}1 ha, 38{,}8\,\% del ROI), que coincide con la referencia espectral de pérdida de vegetación de la validación (23\,835 y 23\,837 píxeles, respectivamente). El agua superficial deja de comportarse como agua abierta (de 3\,727 píxeles en $t_1$ a 2 en $t_2$) y pasa a transición (20{,}4 ha) y suelo/relave (10{,}6 ha), lo que refleja la sedimentación y la turbidez del río Paraopeba. El cambio total fuera de la diagonal asciende a 293{,}7 ha, mayor que las 273{,}86 ha del umbral de $\Delta$NDVI, porque incluye además las transiciones del cauce y cambios de vegetación que no cruzan el umbral estricto.
 
 \subsection{Estadísticas}
 Los rangos observados de los índices son de $-0{,}824$ a $0{,}024$ para NDWI$_{t_2}$ y de $-0{,}970$ a $0{,}771$ para $\Delta$NDVI. La asimetría de este último rango, con una magnitud negativa alrededor de $1{,}3$ veces mayor que la positiva, indica que el cambio dominante en el ROI es la pérdida de vegetación. El área total afectada, calculada en la Fase~4 tras la umbralización y la vectorización, es de 273{,}86 ha (2{,}74 km$^2$), el 50{,}9\,\% del área de análisis.
