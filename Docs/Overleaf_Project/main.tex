@@ -63,7 +63,14 @@ El presente trabajo aplica este enfoque al caso de Brumadinho (Minas Gerais, Bra
 El objetivo de esta entrega es cubrir las fases 1 a 4 del flujo metodológico. Esto incluye definir las fechas y los datos, garantizar la comparabilidad radiométrica y geométrica de las imágenes, y calcular, diferenciar e interpretar comparativamente ambos índices.
 
 \section{Región de interés (ROI) y caso de estudio}
-El área de estudio se localiza en el municipio de Brumadinho, al suroeste de Belo Horizonte, dentro del Cuadrilátero Ferrífero de Minas Gerais. Es una región de relieve ondulado dominada por un mosaico de remanentes de bosque atlántico, pastos, zonas urbanas y explotaciones mineras de hierro. El clima es tropical con una estación lluviosa en verano (noviembre--marzo), lo que condiciona fuertemente la disponibilidad de imágenes ópticas sin nubes.
+El área de estudio se localiza en el municipio de Brumadinho, al suroeste de Belo Horizonte, dentro del Cuadrilátero Ferrífero de Minas Gerais. Es una región de relieve ondulado dominada por un mosaico de remanentes de bosque atlántico, pastos, zonas urbanas y explotaciones mineras de hierro. El clima es tropical con una estación lluviosa en verano (noviembre--marzo), lo que condiciona fuertemente la disponibilidad de imágenes ópticas sin nubes. La localización de la zona de análisis se muestra en la Figura~\ref{fig:estudio_roi}.
+
+\begin{figure}[H]
+ \centering
+ \includegraphics[width=0.9\textwidth]{figures/layout_ROI}
+ \caption{Área de estudio (\texttt{ROI\_Brumadinho}) con grilla UTM (EPSG:32723) y recuadro de localización en Brasil.}
+ \label{fig:estudio_roi}
+\end{figure}
 
 \subsection{El evento}
 El 25 de enero de 2019, hacia las 12:28, colapsó el dique B1 de la mina Córrego do Feijão, operada por Vale S.A. en Brumadinho. La estructura, construida por el método de ``alteamiento a montante'' (\emph{upstream}), retenía del orden de 12 millones de m$^3$ de relaves (residuos finos del procesamiento de mineral de hierro). La ruptura liberó una avalancha de lodo que descendió unos 10\,km por el valle del Ribeirão Ferro-Carvão, arrasando las instalaciones de la mina y las áreas habitadas y rurales a su paso, y terminó alcanzando el río Paraopeba, afluente del río São Francisco \parencite{Rotta2020}.
@@ -366,7 +373,7 @@ La Tabla~\ref{tab:comparacion} resume la respuesta de ambos índices según la z
 La comparación muestra que el NDVI es el índice más discriminante para delimitar la huella del cambio. La transición de vegetación a material mineral produce el mayor contraste espectral entre fechas. El NDWI de McFeeters fue diseñado para agua abierta y responde de forma limitada a superficies de material saturado, pero aporta información complementaria sobre el comportamiento del cauce. En consecuencia, $\Delta$NDVI se adopta como variable principal para la umbralización de la Fase~4, y $\Delta$NDWI como variable de apoyo para el análisis del río.
 
 \subsection{Detección del cambio (Fase 4)}
-\textbf{Umbral y área afectada.} La distribución de $\Delta$NDVI dentro del ROI (Figura~\ref{fig:hist}) se concentra alrededor de cero y presenta una cola hacia valores negativos, lo que respalda la elección de un umbral negativo. Con $\tau=-0{,}11$ se detectan 31\,489 píxeles de cambio (51{,}3\,\% del ROI) que, tras la vectorización y el descarte de los polígonos menores de $0{,}5$ ha, dan lugar a 2 polígonos con un área total de 273{,}86 ha (2{,}74 km$^2$), el 50{,}9\,\% del área de análisis. La huella se confina al corredor del Ribeirão Ferro-Carvão y al cauce del Paraopeba, en coherencia con los mapas de $\Delta$NDVI de la Figura~\ref{fig:delta}. El área de cambio vectorizada y los puntos del muestreo de validación se muestran en la Figura~\ref{fig:f4_resultado}.
+\textbf{Umbral y área afectada.} La distribución de $\Delta$NDVI dentro del ROI (Figura~\ref{fig:hist}) se concentra alrededor de cero y presenta una cola hacia valores negativos, lo que respalda la elección de un umbral negativo. Con $\tau=-0{,}11$ se detectan 31\,489 píxeles de cambio (51{,}3\,\% del ROI) que, tras la vectorización y el descarte de los polígonos menores de $0{,}5$ ha, dan lugar a 2 polígonos con un área total de 273{,}86 ha (2{,}74 km$^2$), el 50{,}9\,\% del área de análisis. La huella se confina al corredor del Ribeirão Ferro-Carvão y al cauce del Paraopeba, en coherencia con los mapas de $\Delta$NDVI de la Figura~\ref{fig:delta}. El área de cambio vectorizada y los puntos del muestreo de validación se muestran en la Figura~\ref{fig:f4_resultado}; la distribución espacial del cambio, en el mapa temático de la Figura~\ref{fig:mapa_cambio}.
 
 \begin{figure}[H]
  \centering
@@ -375,13 +382,12 @@ La comparación muestra que el NDVI es el índice más discriminante para delimi
  \label{fig:hist}
 \end{figure}
 
-% Mapa de cambio (Print Layout de QGIS). Descomentar cuando esté exportado en figures/fig4_mapa_cambio.png
-% \begin{figure}[H]
-%  \centering
-%  \includegraphics[width=0.85\textwidth]{figures/fig4_mapa_cambio}
-%  \caption{Área de cambio detectada (rojo, polígonos $\ge 0{,}5$ ha) y sector sin cambio (verde) dentro del ROI.}
-%  \label{fig:mapa_cambio}
-% \end{figure}
+\begin{figure}[H]
+ \centering
+ \includegraphics[width=0.9\textwidth]{figures/fig4_mapa_cambio}
+ \caption{Área de cambio detectada (rojo, polígonos $\ge 0{,}5$ ha) y sector sin cambio (verde) dentro del ROI.}
+ \label{fig:mapa_cambio}
+\end{figure}
 
 \textbf{Exactitud.} La exactitud del mapa de cambio se evaluó frente a la referencia espectral de pérdida de vegetación. Como la referencia es un subconjunto del cambio detectado, no se registran falsos negativos y la incertidumbre se debe al exceso de detección: 7\,652 píxeles marcados como cambio no cumplen la condición estricta de referencia. La Tabla~\ref{tab:exactitud} resume la matriz de confusión y los coeficientes de exactitud global (OA), Kappa y F1, tanto para la evaluación censal (todos los píxeles del ROI) como para el muestreo estratificado. La concordancia es alta (OA $=0{,}875$ y Kappa $=0{,}751$ en la evaluación censal; OA $=0{,}91$ y Kappa $=0{,}82$ en el muestreo), lo que indica que el umbral de $\Delta$NDVI delimita correctamente la pérdida de vegetación, con una ligera sobreestimación en las zonas donde el índice desciende pero que no partían de vegetación densa, como el cauce del río y el entorno de la mina.
 
