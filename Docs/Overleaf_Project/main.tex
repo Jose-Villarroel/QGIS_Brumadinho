@@ -168,7 +168,7 @@ Antes de comparar dos imágenes es necesario que sean radiométrica y geométric
     \begin{equation}
      M = (\mathrm{SCL}=0) \lor (\mathrm{SCL}=1) \lor (\mathrm{SCL}=3) \lor (\mathrm{SCL}=8) \lor (\mathrm{SCL}=9) \lor (\mathrm{SCL}=10)
     \end{equation}
-    Las máscaras \texttt{t1\_cloudmask} y \texttt{t2\_cloudmask} (Figura~\ref{fig:cloudmask}) toman el valor 0 en todo el ROI. Esto indica que no hay píxeles afectados por nubes ni sombras dentro del área de análisis. Las nubes presentes en $t_1$ se localizan al norte, fuera del polígono (Figura~\ref{fig:falsecolor}a).
+    Las máscaras \texttt{t1\_cloudmask} y \texttt{t2\_cloudmask} (Figura~\ref{fig:cloudmask}) toman el valor 0 en todo el ROI. Esto indica que no hay píxeles afectados por nubes ni sombras dentro del área de análisis. Las nubes presentes en $t_1$ se localizan al norte, fuera del polígono (Figura~\ref{fig:falsecolor}a). Aunque el enunciado del proyecto sugiere el uso de las bandas de evaluación de calidad (QA), en la colección Sentinel-2 Nivel 2A la máscara de calidad equivalente es la capa de clasificación de escena (SCL) de Sen2Cor, que sustituye a la banda QA60 del producto 1C y clasifica cada píxel (nube, cirro, sombra, agua, vegetación, etc.) a partir del propio proceso de corrección atmosférica. Se optó por la SCL porque cumple la misma función de control de calidad con una interpretación más directa y sin la decodificación manual de bits que exige la QA60.
 \end{itemize}
 
 \begin{figure}[H]
@@ -283,8 +283,8 @@ En esta fase el mapa continuo de $\Delta$NDVI se transforma en una máscara bina
     \end{equation}
     con 23\,837 píxeles (38{,}8\,\% del ROI). La referencia es un subconjunto del cambio detectado, de manera que no hay falsos negativos y el error se concentra en el exceso de detección.
     \item \textbf{Vectorización:} el ráster de cambio se convirtió a polígonos (Poligonizar), se eliminaron los duplicados y se disolvió la geometría. Para descartar píxeles aislados se descartaron los polígonos menores de $0{,}5$ ha, con lo que quedaron 2 polígonos (Figura~\ref{fig:f4_vector}).
-    \item \textbf{Área afectada:} la superficie total de cambio es de 273{,}86 ha (2{,}74 km$^2$), el 50{,}9\,\% del área de análisis (538{,}46 ha).
-    \item \textbf{Validación:} la exactitud se evaluó con un muestreo aleatorio estratificado de 50 puntos dentro del cambio y 50 fuera de él, con asignación proporcional al área de cada clase, sobre los que se muestrearon los valores del ráster de cambio y de la referencia. La matriz de confusión y los coeficientes se resumen en la Tabla~\ref{tab:exactitud}.
+    \item \textbf{Área afectada:} la superficie total de cambio es de 273{,}86 ha (2{,}74 km$^2$), el 50{,}9\,\% del área de análisis (538{,}46 ha). La reproyección al SRC proyectado empleada para el cálculo del área se muestra en la Figura~\ref{fig:f4_reproy}.
+    \item \textbf{Validación:} la exactitud se evaluó con un muestreo aleatorio estratificado de 50 puntos dentro del cambio y 50 fuera de él, con asignación proporcional al área de cada clase, sobre los que se muestrearon los valores del ráster de cambio y de la referencia. La matriz de confusión y los coeficientes se resumen en la Tabla~\ref{tab:exactitud}. El muestreo se generó con la herramienta \emph{Puntos aleatorios en polígonos} (Figura~\ref{fig:f4_muestreo}).
 \end{itemize}
 
 \begin{figure}[H]
@@ -304,6 +304,24 @@ En esta fase el mapa continuo de $\Delta$NDVI se transforma en una máscara bina
  \begin{subfigure}{0.49\textwidth}\includegraphics[width=\linewidth]{figures/f4_filtro}\caption{Filtro de polígonos $\ge 0{,}5$ ha}\end{subfigure}
  \caption{Definición de la referencia espectral y vectorización del ráster de cambio.}
  \label{fig:f4_vector}
+\end{figure}
+
+\begin{figure}[H]
+ \centering
+ \begin{subfigure}{0.49\textwidth}\includegraphics[width=\linewidth]{figures/f4_reproyeccion}\caption{Reproyección a EPSG:32723}\end{subfigure}
+ \hfill
+ \begin{subfigure}{0.49\textwidth}\includegraphics[width=\linewidth]{figures/f4_reproyeccion_resultado}\caption{Polígonos de cambio reproyectados}\end{subfigure}
+ \caption{Reproyección de los polígonos de cambio del SRC geográfico (EPSG:4326) al proyectado (EPSG:32723, UTM 23S) para calcular el área en hectáreas.}
+ \label{fig:f4_reproy}
+\end{figure}
+
+\begin{figure}[H]
+ \centering
+ \begin{subfigure}{0.49\textwidth}\includegraphics[width=\linewidth]{figures/f4_muestreo_sin}\caption{50 puntos fuera del cambio (\texttt{sin\_cambio})}\end{subfigure}
+ \hfill
+ \begin{subfigure}{0.49\textwidth}\includegraphics[width=\linewidth]{figures/f4_muestreo_cambio}\caption{50 puntos dentro del cambio}\end{subfigure}
+ \caption{Configuración del muestreo aleatorio estratificado (50 puntos por clase) empleado en la validación.}
+ \label{fig:f4_muestreo}
 \end{figure}
 
 \section{Resultados y discusión}
@@ -389,7 +407,7 @@ La comparación muestra que el NDVI es el índice más discriminante para delimi
  \label{fig:mapa_cambio}
 \end{figure}
 
-\textbf{Exactitud.} La exactitud del mapa de cambio se evaluó frente a la referencia espectral de pérdida de vegetación. Como la referencia es un subconjunto del cambio detectado, no se registran falsos negativos y la incertidumbre se debe al exceso de detección: 7\,652 píxeles marcados como cambio no cumplen la condición estricta de referencia. La Tabla~\ref{tab:exactitud} resume la matriz de confusión y los coeficientes de exactitud global (OA), Kappa y F1, tanto para la evaluación censal (todos los píxeles del ROI) como para el muestreo estratificado. La concordancia es alta (OA $=0{,}875$ y Kappa $=0{,}751$ en la evaluación censal; OA $=0{,}91$ y Kappa $=0{,}82$ en el muestreo), lo que indica que el umbral de $\Delta$NDVI delimita correctamente la pérdida de vegetación, con una ligera sobreestimación en las zonas donde el índice desciende pero que no partían de vegetación densa, como el cauce del río y el entorno de la mina.
+\textbf{Exactitud.} La exactitud del mapa de cambio se evaluó frente a la referencia espectral de pérdida de vegetación. Como la referencia es un subconjunto del cambio detectado, no se registran falsos negativos y la incertidumbre se debe al exceso de detección: 7\,652 píxeles marcados como cambio no cumplen la condición estricta de referencia. La Tabla~\ref{tab:exactitud} resume la matriz de confusión y los coeficientes de exactitud global (OA), Kappa y F1, tanto para la evaluación censal (todos los píxeles del ROI) como para el muestreo estratificado. La concordancia es alta (OA $=0{,}875$ y Kappa $=0{,}751$ en la evaluación censal; OA $=0{,}91$ y Kappa $=0{,}82$ en el muestreo), lo que indica que el umbral de $\Delta$NDVI delimita correctamente la pérdida de vegetación, con una ligera sobreestimación en las zonas donde el índice desciende pero que no partían de vegetación densa, como el cauce del río y el entorno de la mina. La construcción del ráster de contingencia censal se muestra en la Figura~\ref{fig:f4_resultado}.
 
 \begin{table}[H]
  \centering
@@ -409,9 +427,11 @@ La comparación muestra que el NDVI es el índice más discriminante para delimi
  \centering
  \begin{subfigure}{0.49\textwidth}\includegraphics[width=\linewidth]{figures/f4_cambio}\caption{Área de cambio vectorizada}\end{subfigure}
  \hfill
- \begin{subfigure}{0.49\textwidth}\includegraphics[width=\linewidth]{figures/f4_puntos_cambio}\caption{Puntos dentro del cambio}\end{subfigure}\\[4pt]
+ \begin{subfigure}{0.49\textwidth}\includegraphics[width=\linewidth]{figures/f4_matriz_censal}\caption{Ráster de contingencia censal (TP/FP/FN/TN)}\end{subfigure}\\[4pt]
+ \begin{subfigure}{0.49\textwidth}\includegraphics[width=\linewidth]{figures/f4_puntos_cambio}\caption{Puntos dentro del cambio}\end{subfigure}
+ \hfill
  \begin{subfigure}{0.49\textwidth}\includegraphics[width=\linewidth]{figures/f4_puntos_sin}\caption{Puntos fuera del cambio}\end{subfigure}
- \caption{Área de cambio detectada y puntos del muestreo aleatorio estratificado empleado en la validación.}
+ \caption{Área de cambio detectada, ráster de contingencia de la evaluación censal y puntos del muestreo aleatorio estratificado empleado en la validación.}
  \label{fig:f4_resultado}
 \end{figure}
 
@@ -427,6 +447,8 @@ La comparación muestra que el NDVI es el índice más discriminante para delimi
 
 \subsection{Matriz de transición de coberturas (From-To)}
 La clasificación de cada fecha con los mismos umbrales de NDVI y NDWI (vegetación: NDVI $\ge 0{,}3$; transición: $0{,}2<\mathrm{NDVI}<0{,}3$; suelo/relave: NDVI $\le 0{,}2$; agua: NDWI $>0$) permite construir la matriz de transición \emph{From-To} de la Tabla~\ref{tab:fromto}. La diagonal representa la persistencia de cada clase y las celdas fuera de ella, las transiciones entre $t_1$ y $t_2$.
+
+Conviene precisar que esta matriz \emph{From-To} no se obtuvo de una clasificación supervisada (Random Forest o SVM), como suele asociarse a este tipo de análisis, sino de la umbralización de los índices espectrales. Se adoptó este enfoque porque el proyecto cuenta con solo dos fechas y con una firma espectral bien definida del relave, y porque los umbrales empleados proceden de rangos de NDVI documentados para vegetación sana, vegetación en transición y suelo desnudo, lo que hace la clasificación transparente, reproducible y verificable sin necesidad de etiquetas de entrenamiento. La coherencia de la transición dominante vegetación$\rightarrow$suelo/relave (23\,835 píxeles) con la referencia espectral independiente (23\,837 píxeles) respalda que esta asignación de clases es fiable.
 
 \begin{table}[H]
  \centering
@@ -450,11 +472,15 @@ La transición dominante es vegetación$\rightarrow$suelo/relave (209{,}1 ha, 38
 Los rangos observados de los índices son de $-0{,}824$ a $0{,}024$ para NDWI$_{t_2}$ y de $-0{,}970$ a $0{,}771$ para $\Delta$NDVI. La asimetría de este último rango, con una magnitud negativa alrededor de $1{,}3$ veces mayor que la positiva, indica que el cambio dominante en el ROI es la pérdida de vegetación. El área total afectada, calculada en la Fase~4 tras la umbralización y la vectorización, es de 273{,}86 ha (2{,}74 km$^2$), el 50{,}9\,\% del área de análisis.
 
 \subsection{Discusión}
-Los resultados muestran que una aproximación basada en índices espectrales, con imágenes de acceso libre y un preprocesamiento cuidadoso, permite identificar con claridad la trayectoria del material a lo largo del valle y su llegada al río Paraopeba. La corrección atmosférica (L2A), el co-registro verificado y la ausencia de nubes en el ROI respaldan que las diferencias observadas corresponden a cambios en la superficie y no a artefactos de adquisición.
+Los resultados muestran que una aproximación basada en índices espectrales, con imágenes de acceso libre y un preprocesamiento cuidadoso, permite identificar con claridad la trayectoria del material a lo largo del valle y su llegada al río Paraopeba. La corrección atmosférica (L2A), el co-registro verificado y la ausencia de nubes en el ROI respaldan que las diferencias observadas corresponden a cambios en la superficie y no a artefactos de adquisición. La huella detectada (273{,}86 ha, 50{,}9\,\% del ROI) se confina al corredor del Ribeirão Ferro-Carvão y al cauce del Paraopeba (Figura~\ref{fig:mapa_cambio}), y la transición dominante vegetación$\rightarrow$suelo/relave (209{,}1 ha) coincide con la referencia espectral independiente, lo que indica que la señal capturada es la firma del depósito de relave y no un patrón espurio.
 
-Entre las limitaciones se cuenta una con que el NDWI de McFeeters es poco sensible a superficies húmedas no inundadas.
+Desde el punto de vista socio-ambiental, la superficie cuantificada permite dimensionar el impacto del colapso. Las 209{,}1 ha de vegetación convertidas en suelo o relave corresponden al bosque ripario y a la cobertura del corredor del valle sepultados por el lodo, justamente las áreas que sostenían el ecosistema ribereño del Ribeirão Ferro-Carvão. De forma complementaria, el agua superficial deja de comportarse como agua abierta (de 3\,727 a 2 píxeles), lo que refleja la sedimentación y la turbidez del Paraopeba. Este resultado es coherente con el contexto documentado del evento: la contaminación del río obligó a interrumpir el abastecimiento de varios municipios del área metropolitana de Belo Horizonte, y la pérdida de cobertura vegetal se suma al saldo de 270 víctimas mortales y a las consecuencias ambientales y legales del desastre \parencite{Rotta2020}. En este sentido, el mapa de cambio no es solo un producto técnico, sino una evidencia cuantificable de la huella física del evento.
 
-Para trabajos posteriores podría incorporarse el MNDWI con la banda SWIR (B11) o datos SAR de Sentinel-1.
+La evaluación de exactitud respalda esta lectura. La concordancia con la referencia espectral de pérdida de vegetación es alta (OA $=0{,}91$, Kappa $=0{,}82$ y F1 $=0{,}90$ en el muestreo estratificado), y la ausencia de falsos negativos indica que no se escapó ningún cambio real. La incertidumbre restante se debe al exceso de detección (7\,652 píxeles en la evaluación censal), concentrado en el cauce del río y el entorno de la mina, donde el $\Delta$NDVI desciende aunque no se partiera de vegetación densa. Se trata, por tanto, de una limitación del método y no del evento, y refuerza que la transición dominante es el indicador más fiable.
+
+Entre las limitaciones conviene señalar varias. El intervalo de 15 días entre $t_1$ y $t_2$ es corto para atribuir los cambios al evento, pero no elimina del todo la variabilidad fenológica o meteorológica, como la respuesta de la vegetación a las lluvias de verano. La resolución de 10\,m de Sentinel-2 introduce mezcla de píxeles en los bordes del depósito, lo que explica parte de las diferencias de contorno observadas frente a las imágenes de alta resolución. El umbral $\tau=-0{,}11$, derivado de la media y la desviación estándar, es un criterio objetivo pero en cierta medida dependiente de la distribución de la escena. Además, la referencia espectral no es plenamente independiente, pues se deriva de los mismos índices, y el NDWI de McFeeters es poco sensible a superficies húmedas no inundadas.
+
+Para trabajos posteriores podría incorporarse el MNDWI con la banda SWIR (B11), más robusto frente a superficies saturadas, o datos SAR de Sentinel-1, insensibles a las nubes y sensibles a la humedad y la rugosidad del terreno. Una serie temporal de mayor densidad permitiría separar la tendencia del evento de la variabilidad estacional, y el uso de imágenes de mayor resolución ayudaría a afinar los bordes de la huella.
 
 \section{Conclusión}
 \begin{itemize}
@@ -462,6 +488,7 @@ Para trabajos posteriores podría incorporarse el MNDWI con la banda SWIR (B11) 
     \item El NDVI y su diferencia delimitan con claridad la zona de cambio. La disminución del índice se concentra en el corredor del Ribeirão Ferro-Carvão y en el cauce del Paraopeba, mientras que las áreas fuera de la trayectoria permanecen estables.
     \item El NDWI identifica consistentemente el agua superficial, pero es menos sensible al material depositado. Su utilidad principal es complementar el análisis del río.
     \item La umbralización de $\Delta$NDVI ($\tau=-0{,}11$) y la vectorización delimitan un área de cambio de 273{,}86 ha (50{,}9\,\% del ROI). Frente a una referencia espectral de pérdida de vegetación, la evaluación censal alcanza OA $=0{,}875$, Kappa $=0{,}751$ y F1 $=0{,}862$, y el muestreo estratificado OA $=0{,}91$, Kappa $=0{,}82$ y F1 $=0{,}90$.
+    \item En términos socio-ambientales, la huella cuantificada trasciende el dato técnico: las 209{,}1 ha de vegetación sepultadas y la pérdida de la señal de agua abierta en el Paraopeba traducen espacialmente un desastre que causó 270 víctimas mortales, degradó la calidad del agua y obligó a interrumpir el abastecimiento de varios municipios \parencite{Rotta2020}. El mapa de cambio se convierte así en una evidencia cuantificable de la huella física del evento y no solo en un producto de procesamiento.
 \end{itemize}
 
 \printbibliography
